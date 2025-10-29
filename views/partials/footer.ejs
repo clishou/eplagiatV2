@@ -7,36 +7,98 @@
   const box=document.getElementById('result');
   if(!form) return;
 
-  form.addEventListener('submit',function(e){
-    e.preventDefault();
-    if(!fileInput || !fileInput.files || !fileInput.files[0]){ alert('Choisissez un fichier.'); return; }
-    const f=fileInput.files[0]; const fd=new FormData(); fd.append('file',f);
-    if(progress) progress.classList.remove('hidden'); if(bar) bar.style.width='10%';
+  function showError(msg){
+    if(box){ box.classList.remove('hidden'); box.innerHTML = `<div style="color:#fca5a5">Erreur : ${msg}</div>`; }
+  }
 
-    const xhr=new XMLHttpRequest(); xhr.open('POST', form.action||'/upload', true);
-    xhr.upload.onprogress=function(ev){ if(bar && ev.lengthComputable){ const pct=Math.min(95, Math.round(ev.loaded/ev.total*100)); bar.style.width=pct+'%'; }};
-    xhr.onreadystatechange=function(){
-      if(xhr.readyState!==4) return; if(bar) bar.style.width='100%';
-      let data={}; try{ data=JSON.parse(xhr.responseText||'{}'); }catch(e){}
-      if(box) box.classList.remove('hidden');
-      if(data.ok){
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    const f = fileInput?.files?.[0];
+    if(!f){ alert('Choisissez un fichier.'); return; }
+
+    if(progress) progress.classList.remove('hidden');
+    if(bar) bar.style.width='10%';
+
+    try {
+      // Si > 4 Mo, on passe par Vercel Blob (contourne la limite ~4,5 Mo des Serverless)
+      if (f.size > 4 * 1024 * 1024) {
+        // 1) Demander une URL d’upload
+        const u = await fetch('/api/blob-upload-url');
+        if(!u.ok) throw new Error('Impossible de préparer le téléversement');
+        const { url } = await u.json();
+
+        // 2) Envoyer le fichier directement vers le blob
+        const put = await fetch(url, {
+          method: 'PUT',
+          headers: { 'Content-Type': f.type || 'application/octet-stream' },
+          body: f
+        });
+        if(!put.ok) throw new Error('Échec de l’upload vers le stockage');
+
+        if(bar) bar.style.width='70%';
+
+        // 3) Demander l’analyse par URL
+        const analyze = await fetch('/analyze-by-url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url, filename: f.name })
+        });
+
+        const data = await analyze.json().catch(()=> ({}));
+        if(!analyze.ok || !data.ok){
+          throw new Error((data && (data.error||data.message)) || 'analyse échouée');
+        }
+
         const sim=data.similarity||{};
-        box.innerHTML = `<div><strong>Analyse effectuée</strong><br/>
-          Fichier: ${data.filename || f.name}<br/>
-          Taille: ${data.size ?? f.size} octets<br/>
-          Mots estimés: ${data.wordCount ?? '—'}<br/>
-          <div style="margin-top:8px">
-            <strong>Score de similarité (placeholder):</strong> ${sim.score ?? '—'}%
-            <div class="tiny muted">Méthode: ${sim.method || '—'}${sim.detail ? ' — ' + sim.detail : ''}</div>
-          </div>
-          <div class="tiny muted" style="margin-top:6px">Extraction: ${data.note || '—'}</div>
-          ${data.snippet ? `<pre style="margin-top:10px;white-space:pre-wrap;border:1px solid #222;padding:8px;border-radius:8px;background:#0f1116;">${data.snippet}</pre>` : ''}
-        </div>`;
-      } else {
-        box.innerHTML = `<div style="color:#fca5a5">Erreur: ${data.error || 'inconnue'}</div>`;
+        if(bar) bar.style.width='100%';
+        if(box){
+          box.classList.remove('hidden');
+          box.innerHTML = `<div><strong>Analyse effectuée</strong><br/>
+            Fichier: ${data.filename || f.name}<br/>
+            Taille: ${data.size ?? f.size} octets<br/>
+            Mots estimés: ${data.wordCount ?? '—'}<br/>
+            <div style="margin-top:8px">
+              <strong>Score de similarité (placeholder):</strong> ${sim.score ?? '—'}%
+              <div class="tiny muted">Méthode: ${sim.method || '—'}${sim.detail ? ' — ' + sim.detail : ''}</div>
+            </div>
+            <div class="tiny muted" style="margin-top:6px">Extraction: ${data.note || '—'}</div>
+            ${data.snippet ? `<pre style="margin-top:10px;white-space:pre-wrap;border:1px solid #222;padding:8px;border-radius:8px;background:#0f1116;">${data.snippet}</pre>` : ''}
+          </div>`;
+        }
+        return;
       }
-    };
-    xhr.send(fd);
+
+      // Cas ≤ 4 Mo : on garde l’API /upload existante
+      const fd=new FormData(); fd.append('file', f);
+      const xhr=new XMLHttpRequest(); xhr.open('POST', form.action||'/upload', true);
+      xhr.upload.onprogress=function(ev){ if(bar && ev.lengthComputable){ const pct=Math.min(95, Math.round(ev.loaded/ev.total*100)); bar.style.width=pct+'%'; }};
+      xhr.onreadystatechange=function(){
+        if(xhr.readyState!==4) return; if(bar) bar.style.width='100%';
+        let data={}; try{ data=JSON.parse(xhr.responseText||'{}'); }catch(e){}
+        if(box) box.classList.remove('hidden');
+        if(xhr.status===413){ showError('Fichier trop volumineux pour Vercel (limite ~4,5 Mo).'); return; }
+        if(data.ok){
+          const sim=data.similarity||{};
+          box.innerHTML = `<div><strong>Analyse effectuée</strong><br/>
+            Fichier: ${data.filename || f.name}<br/>
+            Taille: ${data.size ?? f.size} octets<br/>
+            Mots estimés: ${data.wordCount ?? '—'}<br/>
+            <div style="margin-top:8px">
+              <strong>Score de similarité (placeholder):</strong> ${sim.score ?? '—'}%
+              <div class="tiny muted">Méthode: ${sim.method || '—'}${sim.detail ? ' — ' + sim.detail : ''}</div>
+            </div>
+            <div class="tiny muted" style="margin-top:6px">Extraction: ${data.note || '—'}</div>
+            ${data.snippet ? `<pre style="margin-top:10px;white-space:pre-wrap;border:1px solid #222;padding:8px;border-radius:8px;background:#0f1116;">${data.snippet}</pre>` : ''}
+          </div>`;
+        } else {
+          showError(data.error || 'inconnue');
+        }
+      };
+      xhr.send(fd);
+
+    } catch (err) {
+      showError(err && err.message ? err.message : 'inconnue');
+    }
   });
 })();
 </script>
