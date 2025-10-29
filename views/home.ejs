@@ -1,37 +1,150 @@
 
+<!-- HERO / Accroche -->
 <section class="relative overflow-hidden">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 sm:py-24 grid lg:grid-cols-2 gap-12 items-center">
-    <div>
-      <p class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-slate-100 text-slate-600">
-        La référence anti-plagiat francophone
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-20 grid lg:grid-cols-[360px,1fr] gap-10 items-center">
+    <!-- Logo + baseline -->
+    <div class="flex flex-col gap-6">
+      <a href="/" class="inline-flex items-center gap-3">
+        <img src="/public/logo.svg" alt="Anti-Plagiat" class="h-10 w-auto" />
+        <span class="sr-only">Anti-Plagiat</span>
+      </a>
+
+      <p class="inline-flex w-fit items-center px-3 py-1 rounded-full text-sm bg-slate-100 text-slate-600">
+        La référence anti-plagiat pour la recherche
       </p>
-      <h1 class="mt-6 text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
-        Vérifiez le plagiat & la génération par IA de vos travaux
+
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
+        Vérifiez le plagiat et la génération par IA de vos
+        <span class="whitespace-nowrap">thèses, mémoires</span> et articles
+        <span class="text-slate-600 font-semibold">avec précision</span>
       </h1>
-      <p class="mt-6 text-lg text-slate-600">
+
+      <p class="mt-2 text-lg text-slate-600">
         Téléversez vos documents et recevez un <strong>score de similarité</strong>,
-        un <strong>rapport détaillé</strong> et un <strong>certificat PDF</strong>.
+        un <strong>rapport détaillé</strong> et un <strong>certificat PDF</strong> vérifiable.
       </p>
-      <div class="mt-8 flex gap-4">
-        <a href="/upload" class="px-5 py-3 rounded-xl bg-slate-900 text-white font-medium hover:bg-slate-800">
+
+      <!-- CTA -->
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="/upload"
+           class="px-5 py-3 rounded-xl bg-slate-900 text-white font-medium hover:bg-slate-800">
           Téléverser un document
         </a>
-        <a href="#tarifs" class="px-5 py-3 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50">
+        <a href="#tarifs"
+           class="px-5 py-3 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50">
           Voir les tarifs
         </a>
       </div>
-      <ul class="mt-6 text-sm text-slate-500 space-y-1">
-        <li>🔒 Données chiffrées</li>
-        <li>⚡ Rapport en quelques minutes</li>
-        <li>💳 Paiement simple</li>
+
+      <!-- Points clés -->
+      <ul class="mt-4 text-sm text-slate-600 grid gap-2">
+        <li>🔒 Données chiffrées & traitement conforme</li>
+        <li>⚡ Résultats en quelques minutes</li>
+        <li>🧪 Détection de similitudes + repérage de génération IA (en évolution)</li>
+        <li>📄 Rapport lisible + certificat PDF vérifiable</li>
       </ul>
     </div>
+
+    <!-- Illustration / placeholder -->
     <div class="rounded-3xl border border-slate-200 bg-white p-6">
       <div class="aspect-[4/3] w-full rounded-2xl bg-slate-50 grid place-items-center text-slate-400">
-        Aperçu du rapport (à venir)
+        Illustration / aperçu du rapport
       </div>
     </div>
   </div>
 </section>
+
+<!-- AVANTAGES / Points clés détaillés -->
+<section class="bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 grid md:grid-cols-3 gap-6">
+    <article class="rounded-2xl border border-slate-200 p-6 bg-white">
+      <h3 class="text-lg font-semibold text-slate-900">Analyse multi-formats</h3>
+      <p class="mt-2 text-slate-600">PDF, DOCX, ODT & TXT. Extraction fidèle du texte pour une comparaison robuste.</p>
+    </article>
+    <article class="rounded-2xl border border-slate-200 p-6 bg-white">
+      <h3 class="text-lg font-semibold text-slate-900">Score de similarité</h3>
+      <p class="mt-2 text-slate-600">
+        Indicateur de similitude (placeholder) + rapport détaillé. Évolutif vers un corpus élargi & signaux IA.
+      </p>
+    </article>
+    <article class="rounded-2xl border border-slate-200 p-6 bg-white">
+      <h3 class="text-lg font-semibold text-slate-900">Certificat vérifiable</h3>
+      <p class="mt-2 text-slate-600">Export PDF, résumé clair et liens de vérification pour vos dossiers académiques.</p>
+    </article>
+  </div>
+</section>
+
+<!-- TARIFS -->
+<section id="tarifs" class="bg-slate-50">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+    <div class="mb-8">
+      <h2 class="text-3xl font-bold text-slate-900">Tarifs</h2>
+      <p class="mt-2 text-slate-600">Des formules adaptées aux étudiants, encadrants et institutions.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Étudiant -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 flex flex-col">
+        <h3 class="text-lg font-semibold text-slate-900">Étudiant</h3>
+        <p class="mt-1 text-slate-600">Vérification d’un document</p>
+        <div class="mt-4 text-3xl font-extrabold text-slate-900">10 000 FCFA</div>
+        <ul class="mt-4 text-sm text-slate-600 space-y-2">
+          <li>• 1 document jusqu’à 20 Mo</li>
+          <li>• Score de similarité</li>
+          <li>• Rapport synthétique</li>
+        </ul>
+        <a href="/upload" class="mt-6 inline-block text-center px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800">
+          Commencer
+        </a>
+      </div>
+
+      <!-- Encadrant/Recherche -->
+      <div class="rounded-2xl border-2 border-slate-900 bg-white p-6 shadow-sm flex flex-col">
+        <h3 class="text-lg font-semibold text-slate-900">Enseignant / Recherche</h3>
+        <p class="mt-1 text-slate-600">Vérifications multiples & rapport détaillé</p>
+        <div class="mt-4 text-3xl font-extrabold text-slate-900">25 000 FCFA</div>
+        <ul class="mt-4 text-sm text-slate-600 space-y-2">
+          <li>• Jusqu’à 3 documents</li>
+          <li>• Rapport détaillé + certificat PDF</li>
+          <li>• Priorité support</li>
+        </ul>
+        <a href="/upload" class="mt-6 inline-block text-center px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800">
+          Choisir cette offre
+        </a>
+      </div>
+
+      <!-- Institution -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-6 flex flex-col">
+        <h3 class="text-lg font-semibold text-slate-900">Institution</h3>
+        <p class="mt-1 text-slate-600">Volumes & intégrations</p>
+        <div class="mt-4 text-3xl font-extrabold text-slate-900">Sur devis</div>
+        <ul class="mt-4 text-sm text-slate-600 space-y-2">
+          <li>• Lots d’analyses & APIs</li>
+          <li>• Tableaux de bord</li>
+          <li>• Accompagnement & formation</li>
+        </ul>
+        <a href="/contact" class="mt-6 inline-block text-center px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50">
+          Nous contacter
+        </a>
+      </div>
+    </div>
+
+    <p class="mt-6 text-xs text-slate-500">
+      * Tarifs indicatifs. Possibilité de facturation en EUR/USD. Remises étudiantes et accords cadres disponibles.
+    </p>
+  </div>
+</section>
+
+<!-- CTA final -->
+<section class="bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 text-center">
+    <h3 class="text-2xl font-bold text-slate-900">Prêt à vérifier votre document ?</h3>
+    <p class="mt-2 text-slate-600">Téléversez votre fichier et recevez votre analyse en quelques minutes.</p>
+    <a href="/upload" class="mt-6 inline-block px-6 py-3 rounded-xl bg-slate-900 text-white font-medium hover:bg-slate-800">
+      Téléverser un document
+    </a>
+  </div>
+</section>
+
 
 <%- include('partials/footer') %>
