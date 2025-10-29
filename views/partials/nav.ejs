@@ -1,17 +1,47 @@
 <%
+  // Récupère l'onglet actif sans créer de conflit de noms
   const _active =
     (typeof navActive !== 'undefined' && navActive !== null) ? navActive
     : ((typeof locals !== 'undefined' && typeof locals.active !== 'undefined') ? locals.active : '');
 %>
 
-<nav class="hidden md:flex items-center gap-8 text-sm">
-  <a href="/services"  class="hover:text-slate-700 <%= (_active==='services' ? 'font-semibold text-slate-900' : '') %>">Services</a>
-  <a href="/a-propos"  class="hover:text-slate-700 <%= (_active==='about'    ? 'font-semibold text-slate-900' : '') %>">Qui sommes-nous</a>
-  <a href="/#marche"   class="hover:text-slate-700">Comment ça marche</a>
-  <a href="/#tarifs"   class="hover:text-slate-700">Tarifs</a>
-  <a href="/contact"   class="hover:text-slate-700 <%= (_active==='contact'  ? 'font-semibold text-slate-900' : '') %>">Contact</a>
-</nav>
+<header class="border-b border-slate-200 bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+    <!-- Logo à gauche -->
+    <a href="/" class="flex items-center gap-3 shrink-0">
+      <img src="/public/logo.svg" alt="Anti-Plagiat" class="h-8 w-auto" />
+      <span class="sr-only">Anti-Plagiat</span>
+    </a>
 
-<a href="/upload" class="hover:text-slate-700 <%= (_active==='upload' ? 'font-semibold text-slate-900' : '') %>">
-  Téléverser
-</a>
+    <!-- Menu à droite (desktop) -->
+    <nav class="hidden md:flex items-center gap-8 text-sm">
+      <a href="/services"
+         class="hover:text-slate-700 <%= (_active==='services' ? 'font-semibold text-slate-900' : 'text-slate-600') %>">
+        Services
+      </a>
+      <a href="/a-propos"
+         class="hover:text-slate-700 <%= (_active==='about' ? 'font-semibold text-slate-900' : 'text-slate-600') %>">
+        Qui sommes-nous
+      </a>
+      <a href="/#marche" class="hover:text-slate-700 text-slate-600">Comment ça marche</a>
+      <a href="/#tarifs" class="hover:text-slate-700 text-slate-600">Tarifs</a>
+      <a href="/contact"
+         class="hover:text-slate-700 <%= (_active==='contact' ? 'font-semibold text-slate-900' : 'text-slate-600') %>">
+        Contact
+      </a>
+      <!-- CTA -->
+      <a href="/upload"
+         class="ml-2 inline-flex items-center px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 <%= (_active==='upload' ? 'ring-2 ring-slate-300' : '') %>">
+        Téléverser
+      </a>
+    </nav>
+
+    <!-- Menu mobile (simple lien d’action) -->
+    <div class="md:hidden">
+      <a href="/upload"
+         class="inline-flex items-center px-3 py-2 rounded-lg bg-slate-900 text-white text-sm hover:bg-slate-800">
+        Téléverser
+      </a>
+    </div>
+  </div>
+</header>
