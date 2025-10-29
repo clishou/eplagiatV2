@@ -192,24 +192,36 @@ app.post('/upload', async (req, reply) => {
   }
 });
 
-// ---- Démarrage (retry sur 3001/3002 si 3000 pris) ----
+// ---- Démarrage local OU export serverless pour Vercel ----
 const isServerless = !!process.env.VERCEL;
-const DEFAULT_PORT = Number(process.env.PORT) || 3000;
-async function listenWithRetry(port, retries = 4) {
-  try {
-    await app.listen({ port, host: '0.0.0.0' });
-    app.log.info(`listening on ${port}`);
-  } catch (e) {
-    if (e.code === 'EADDRINUSE' && retries > 0) {
-      app.log.warn(`Port ${port} occupé, essai sur ${port + 1}...`);
-      return listenWithRetry(port + 1, retries - 1);
-    }
-    app.log.error(e);
-    process.exit(1);
-  }
-}
+
 if (isServerless) {
-  module.exports = app;
+  // Vercel: on exporte un handler (pas d'app.listen)
+  module.exports = async (req, res) => {
+    try {
+      await app.ready();
+      app.server.emit('request', req, res);
+    } catch (e) {
+      console.error(e);
+      res.statusCode = 500;
+      res.end('Server error');
+    }
+  };
 } else {
+  // Local/dev: on écoute un port (avec retry)
+  const DEFAULT_PORT = Number(process.env.PORT) || 3000;
+  async function listenWithRetry(port, retries = 4) {
+    try {
+      await app.listen({ port, host: '0.0.0.0' });
+      app.log.info(`listening on ${port}`);
+    } catch (e) {
+      if (e.code === 'EADDRINUSE' && retries > 0) {
+        app.log.warn(`Port ${port} occupé, essai sur ${port + 1}...`);
+        return listenWithRetry(port + 1, retries - 1);
+      }
+      app.log.error(e);
+      process.exit(1);
+    }
+  }
   listenWithRetry(DEFAULT_PORT);
 }
