@@ -191,6 +191,48 @@ app.post('/upload', async (req, reply) => {
       .send({ ok: false, error: 'Erreur serveur lors de l’analyse.' });
   }
 });
+const { generateUploadURL } = require('@vercel/blob');
+
+// URL signée pour upload direct depuis le navigateur
+app.get('/api/blob-upload-url', async (req, reply) => {
+  const { url } = await generateUploadURL({
+    access: 'public',                    // fichier lisible publiquement
+    contentType: 'application/octet-stream'
+  });
+  return { url };
+});
+
+// Analyse à partir d'une URL (blob)
+app.post('/analyze-by-url', async (req, reply) => {
+  try {
+    const { url, filename } = req.body || {};
+    if (!url) return reply.code(400).send({ ok: false, error: 'URL manquante' });
+
+    // Node 20 a fetch() global
+    const res = await fetch(url);
+    if (!res.ok) return reply.code(400).send({ ok: false, error: "Téléchargement impossible depuis l'URL" });
+
+    const buf = Buffer.from(await res.arrayBuffer());
+    const guessExt =
+      (filename && filename.split('.').pop()) ||
+      (new URL(url).pathname.split('.').pop()) || '';
+    const ext = String(guessExt || '').toLowerCase();
+
+    const { text, note } = await extractText(buf, ext);
+    return reply.send({
+      ok: true,
+      filename: filename || url.split('/').pop(),
+      size: buf.length,
+      wordCount: countWords(text),
+      note,
+      similarity: similarityPlaceholder(text),
+      snippet: text.slice(0, 600)
+    });
+  } catch (err) {
+    app.log.error(err);
+    return reply.code(500).send({ ok: false, error: 'Erreur serveur lors de l’analyse (URL).' });
+  }
+});
 
 // ---- Démarrage local OU export serverless pour Vercel ----
 const isServerless = !!process.env.VERCEL;
