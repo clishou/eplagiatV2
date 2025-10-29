@@ -1,0 +1,17 @@
+<%
+  const _active =
+    (typeof navActive !== 'undefined' && navActive !== null) ? navActive
+    : ((typeof locals !== 'undefined' && typeof locals.active !== 'undefined') ? locals.active : '');
+%>
+
+<nav class="hidden md:flex items-center gap-8 text-sm">
+  <a href="/services"  class="hover:text-slate-700 <%= (_active==='services' ? 'font-semibold text-slate-900' : '') %>">Services</a>
+  <a href="/a-propos"  class="hover:text-slate-700 <%= (_active==='about'    ? 'font-semibold text-slate-900' : '') %>">Qui sommes-nous</a>
+  <a href="/#marche"   class="hover:text-slate-700">Comment ça marche</a>
+  <a href="/#tarifs"   class="hover:text-slate-700">Tarifs</a>
+  <a href="/contact"   class="hover:text-slate-700 <%= (_active==='contact'  ? 'font-semibold text-slate-900' : '') %>">Contact</a>
+</nav>
+
+<a href="/upload" class="hover:text-slate-700 <%= (_active==='upload' ? 'font-semibold text-slate-900' : '') %>">
+  Téléverser
+</a>

@@ -1,0 +1,19 @@
+<%- include('partials/head', { title }) %>
+<%- include('partials/nav',  { navActive: (typeof active !== 'undefined' ? active : '') }) %>
+
+<% const __page = (typeof page !== 'undefined' && page) ? page : ''; %>
+<main>
+  <% if (__page === 'upload') { %>
+    <%- include('upload') %>
+  <% } else if (__page === 'services') { %>
+    <%- include('services') %>
+  <% } else if (__page === 'about') { %>
+    <%- include('about') %>
+  <% } else if (__page === 'contact') { %>
+    <%- include('contact') %>
+  <% } else { %>
+    <%- include('home') %>
+  <% } %>
+</main>
+
+<%- include('partials/footer') %>

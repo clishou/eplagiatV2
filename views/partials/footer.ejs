@@ -1,0 +1,44 @@
+<script>
+(function(){
+  const form=document.getElementById('upload-form');
+  const fileInput=document.getElementById('file');
+  const progress=document.getElementById('progress');
+  const bar=progress?progress.querySelector('.bar'):null;
+  const box=document.getElementById('result');
+  if(!form) return;
+
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!fileInput || !fileInput.files || !fileInput.files[0]){ alert('Choisissez un fichier.'); return; }
+    const f=fileInput.files[0]; const fd=new FormData(); fd.append('file',f);
+    if(progress) progress.classList.remove('hidden'); if(bar) bar.style.width='10%';
+
+    const xhr=new XMLHttpRequest(); xhr.open('POST', form.action||'/upload', true);
+    xhr.upload.onprogress=function(ev){ if(bar && ev.lengthComputable){ const pct=Math.min(95, Math.round(ev.loaded/ev.total*100)); bar.style.width=pct+'%'; }};
+    xhr.onreadystatechange=function(){
+      if(xhr.readyState!==4) return; if(bar) bar.style.width='100%';
+      let data={}; try{ data=JSON.parse(xhr.responseText||'{}'); }catch(e){}
+      if(box) box.classList.remove('hidden');
+      if(data.ok){
+        const sim=data.similarity||{};
+        box.innerHTML = `<div><strong>Analyse effectuée</strong><br/>
+          Fichier: ${data.filename || f.name}<br/>
+          Taille: ${data.size ?? f.size} octets<br/>
+          Mots estimés: ${data.wordCount ?? '—'}<br/>
+          <div style="margin-top:8px">
+            <strong>Score de similarité (placeholder):</strong> ${sim.score ?? '—'}%
+            <div class="tiny muted">Méthode: ${sim.method || '—'}${sim.detail ? ' — ' + sim.detail : ''}</div>
+          </div>
+          <div class="tiny muted" style="margin-top:6px">Extraction: ${data.note || '—'}</div>
+          ${data.snippet ? `<pre style="margin-top:10px;white-space:pre-wrap;border:1px solid #222;padding:8px;border-radius:8px;background:#0f1116;">${data.snippet}</pre>` : ''}
+        </div>`;
+      } else {
+        box.innerHTML = `<div style="color:#fca5a5">Erreur: ${data.error || 'inconnue'}</div>`;
+      }
+    };
+    xhr.send(fd);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<section class="container" style="padding:1.5rem">
+  <h1>Téléverser un document</h1>
+
+  <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data" style="margin:1rem 0">
+    <input id="file" type="file" name="file" accept=".pdf,.docx,.odt,.txt" />
+    <div id="progress" class="progress hidden" style="height:8px;border:1px solid #333;border-radius:6px;margin-top:.5rem;background:#0e0f13">
+      <div class="bar" style="width:0%;height:100%;background:#53e0ff"></div>
+    </div>
+    <button type="submit" style="margin-top:.75rem">Envoyer pour analyse</button>
+  </form>
+
+  <div id="result" class="result hidden" style="margin-top:1rem"></div>
+</section>

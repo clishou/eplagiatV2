@@ -1,0 +1,20 @@
+{
+  "name": "anti-plagiat-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "API Fastify (EJS) pour Anti-Plagiat",
+  "main": "index.js",
+  "scripts": { "start": "node index.js", "dev": "node index.js" },
+  "engines": { "node": "20.x" },
+  "dependencies": {
+    "@fastify/cors": "^9.0.0",
+    "@fastify/multipart": "^8.0.0",
+    "@fastify/static": "^6.0.0",
+    "@fastify/view": "^8.0.0",
+    "ejs": "^3.1.9",
+    "fastify": "^4.0.0",
+    "mammoth": "^1.6.0",
+    "pdf-parse": "^1.1.1",
+    "unzipper": "^0.10.11"
+  }
+}
