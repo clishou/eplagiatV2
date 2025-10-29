@@ -1,6 +1,5 @@
 <%- include('partials/head', { title }) %>
 <%- include('partials/nav',  { navActive: (typeof active !== 'undefined' ? active : '') }) %>
-
 <% const __page = (typeof page !== 'undefined' && page) ? page : ''; %>
 <main>
   <% if (__page === 'upload') { %>
